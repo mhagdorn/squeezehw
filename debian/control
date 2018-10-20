@@ -1,0 +1,14 @@
+Source: squeezehw
+Section: python
+Priority: extra
+Maintainer: Magnus Hagdorn <magnus.hagdorn@marsupium.org>
+Build-Depends: debhelper (>= 9), python3, dh-virtualenv (>= 1.0),
+  python3-setuptools, python3-pip
+Standards-Version: 3.9.5
+
+Package: squeezehw
+Architecture: any
+Pre-Depends: dpkg (>= 1.16.1), python3 (>=3.5), ${misc:Pre-Depends}
+Depends: squeezelite, ${python:Depends}, ${misc:Depends}
+Description: control softsqueeze!
+ hardware controls for softsqueeze player
