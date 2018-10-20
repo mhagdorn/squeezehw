@@ -1,0 +1,4 @@
+lms
+gpiozero
+RPi.GPIO
+spidev
