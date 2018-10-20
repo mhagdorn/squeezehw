@@ -33,7 +33,11 @@ def switchOn():
         player.query('pause','0')
     if player.is_stopped:
         print('was stopped')
-        player.play_uri(default_uri)
+        # the module is broken
+        if False:
+            player.play_uri(default_uri)
+        else:
+            player.query('playlist', 'play', default_uri)
 def switchOff():
     player.turn_off()
 
