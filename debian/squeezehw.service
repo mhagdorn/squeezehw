@@ -1,0 +1,10 @@
+[Unit]
+Description=Hardware Controls for squeezelit
+After=squeezelite.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/squeezehw-control
+
+[Install]
+WantedBy=multi-user.target

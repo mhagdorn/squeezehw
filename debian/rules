@@ -1,4 +1,7 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --with python-virtualenv --python /usr/bin/python3
+	dh $@ --with systemd --with python-virtualenv --python /usr/bin/python3
+
+override_dh_installinit:
+	dh_installinit --noscripts
