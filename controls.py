@@ -11,14 +11,26 @@ playerName = socket.gethostname()
 server = lms.find_server()
 onSwitch = gpiozero.Button(17)
 volumePoti = gpiozero.MCP3008(channel=0,device=1)
+multiSwitch = gpiozero.MCP3008(channel=1,device=1)
 
 default_playlist = "SWR1 Baden-Wuertenberg"
 
+            
+def getPlaylistURI(pl):
+    try: 
+        uri = server.query('playlists',0,1,dict(search=pl,tags="u"))['playlists_loop'][0]['url']
+    except:
+        uri = None
+    return uri
+
 # find the default playlist
-try:
-    default_uri = server.query('playlists',0,1,dict(search=default_playlist,tags="u"))['playlists_loop'][0]['url']
-except:
-    default_uri = None
+default_uri = getPlaylistURI(default_playlist)
+
+channels = {
+        2: getPlaylistURI("SWR1"),
+        5: getPlaylistURI("Planet Rock"),
+        9: getPlaylistURI("SWR2"),
+        }
 
 for p in server.players:
     if p.name == playerName:
@@ -43,6 +55,29 @@ def switchOn():
 def switchOff():
     player.turn_off()
 
+class Channel:
+    def __init__(self,channels):
+        self._curChannel = -1
+        self._channels = channels
+        if True:
+            for c in self._channels:
+                print(c,self._channels[c])
+
+    @staticmethod
+    def _getSwitch():
+        return round(multiSwitch.value*10)
+
+    def __call__(self,change=True):
+        s = self._getSwitch()
+        if s!=self._curChannel:
+            self._curChannel = s
+            try:
+                c = self._channels[s]
+            except:
+                c = default_uri
+            if change:
+                player.play_uri(c)
+
 class Volume:
     def __init__(self):
         self._curVolume = -1
@@ -66,10 +101,13 @@ else:
 onSwitch.when_pressed = switchOn
 onSwitch.when_released = switchOff
 volume = Volume()
+channel = Channel(channels) 
 
 print('waiting')
 volume()
+channel(change=False)
 while True:
     volume()
+    channel()
     time.sleep(0.2)
 
