@@ -1,5 +1,12 @@
-squeezehw (0.1) UNRELEASED; urgency=medium
+squeezehw (0.2) UNRELEASED; urgency=medium
 
+  * add channel selector 
+
+ --  <pi@robertsr606>  Sat, 24 Nov 2018 23:23:34 +0000
+
+squeezehw (0.1) unstable; urgency=medium
+
+  [ magnus.hagdorn@marsupium.org ]
   * Initial release.
 
- --  <magnus.hagdorn@marsupium.org>  Sat, 20 Oct 2018 09:44:31 +0000
+ --  <pi@robertsr606>  Sat, 24 Nov 2018 23:23:09 +0000
