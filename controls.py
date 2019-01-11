@@ -10,8 +10,8 @@ from pprint import pprint
 playerName = socket.gethostname()
 server = lms.find_server()
 onSwitch = gpiozero.Button(17)
-volumePoti = gpiozero.MCP3008(channel=0,device=1)
-multiSwitch = gpiozero.MCP3008(channel=1,device=1)
+volumePoti = gpiozero.MCP3008(channel=0,device=0)
+led = gpiozero.LED(22)
 
 default_playlist = "SWR1 Baden-Wuertenberg"
 
@@ -26,12 +26,6 @@ def getPlaylistURI(pl):
 # find the default playlist
 default_uri = getPlaylistURI(default_playlist)
 
-channels = {
-        2: getPlaylistURI("SWR1"),
-        5: getPlaylistURI("Planet Rock"),
-        9: getPlaylistURI("SWR2"),
-        }
-
 for p in server.players:
     if p.name == playerName:
         player = p
@@ -42,41 +36,11 @@ else:
 def switchOn():
     #player.is_playing)
     player.turn_on()
-    if player.is_paused:
-        print('was paused')
-        player.query('pause','0')
-    if player.is_stopped:
-        print('was stopped')
-        # the module is broken
-        if False:
-            player.play_uri(default_uri)
-        else:
-            player.query('playlist', 'play', default_uri)
+    led.on()
+    player.play_uri(default_uri)
 def switchOff():
     player.turn_off()
-
-class Channel:
-    def __init__(self,channels):
-        self._curChannel = -1
-        self._channels = channels
-        if True:
-            for c in self._channels:
-                print(c,self._channels[c])
-
-    @staticmethod
-    def _getSwitch():
-        return round(multiSwitch.value*10)
-
-    def __call__(self,change=True):
-        s = self._getSwitch()
-        if s!=self._curChannel:
-            self._curChannel = s
-            try:
-                c = self._channels[s]
-            except:
-                c = default_uri
-            if change:
-                player.play_uri(c)
+    led.off()
 
 class Volume:
     def __init__(self):
@@ -84,7 +48,7 @@ class Volume:
 
     @staticmethod
     def _getVolume():
-        return int(volumePoti.value*100)
+        return 20+int(volumePoti.value*30)
 
     def __call__(self):
         v = self._getVolume()
@@ -101,13 +65,10 @@ else:
 onSwitch.when_pressed = switchOn
 onSwitch.when_released = switchOff
 volume = Volume()
-channel = Channel(channels) 
 
 print('waiting')
 volume()
-channel(change=False)
 while True:
     volume()
-    channel()
-    time.sleep(0.2)
+    time.sleep(0.1)
 
